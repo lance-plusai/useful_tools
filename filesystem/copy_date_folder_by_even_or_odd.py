@@ -3,11 +3,17 @@ from argparse import ArgumentParser
 import os
 from datetime import datetime
 import subprocess
+import shutil
 
 
 def copy_folders(folder, target):
-    print('Start copy:\t%s' % folder)
-    subprocess.check_call(['cp', '-r', folder, target])
+    base_folder = os.path.basename(folder)
+    target_folder = os.path.join(target, 'tmp-%s-copy' % base_folder)
+    if os.path.exists(target_folder):
+        shutil.rmtree(target_folder, ignore_errors=True)
+    print('Start copy:\t%s' % folder, target_folder)
+    shutil.copytree(folder, target_folder)
+    os.rename(target_folder, os.path.join(target, base_folder))
 
 
 def main():
